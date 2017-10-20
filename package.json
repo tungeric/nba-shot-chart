@@ -1,0 +1,7 @@
+{
+  "name": "nba_shot_chart",
+  "private": true,
+  "dependencies": {
+    "nba.js": "^0.5.0"
+  }
+}
