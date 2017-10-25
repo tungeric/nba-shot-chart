@@ -28,18 +28,21 @@
       <a>Github here</a>
     </div>
   </header>
-  <div id="user-input">
-    <label>Select Player:
-      <select id="players-input">
-        <option value=null>Select...</option>
-      </select>
-    </label>
+  <br>
+  <div id="content">
+    <div id="user-input">
+      <label>Select Player:
+        <select id="players-input">
+          <option value=null disabled selected>Select...</option>
+        </select>
+      </label>
+    </div>
+    <input id="display-button" type="button" value="Create Shot Chart">
+    <br>
+    <canvas id="canvas" width="960" height="580">
+      <p>Your browser does not support HTML5!</p>
+    </canvas>
   </div>
-  <input id="display-button" type="button" value="Create Shot Chart">
-
-  <canvas id="canvas" width="960" height="580">
-    <p>Your browser does not support HTML5!</p>
-  </canvas>
 
 </body>
 

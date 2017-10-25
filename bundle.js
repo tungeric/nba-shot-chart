@@ -6131,6 +6131,8 @@ exports.encode = exports.stringify = __webpack_require__(50);
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__menu__ = __webpack_require__(183);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__court_js__ = __webpack_require__(184);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__court_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__court_js__);
 const NBA = __webpack_require__(109);
 
 
@@ -6144,7 +6146,10 @@ const NBA = __webpack_require__(109);
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvasEl = document.getElementById("canvas");
+  canvasEl.width = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_X * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale + __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.START_X;
+  canvasEl.height = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_Y * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale + __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.START_Y;
   const ctx = canvasEl.getContext("2d");
+  new __WEBPACK_IMPORTED_MODULE_1__court_js___default.a(canvasEl, ctx).draw();
   
   Object(__WEBPACK_IMPORTED_MODULE_0__menu__["a" /* initPlayerMenu */])();
 
@@ -24441,10 +24446,82 @@ const initPlayerMenu = function initPlayerMenu() {
     opt.value = allPlayers[i].fullName;
     playerList.appendChild(opt);
   }
-}
+};
 /* harmony export (immutable) */ __webpack_exports__["a"] = initPlayerMenu;
 
   
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports) {
+
+class Court {
+  constructor(canvasEl, ctx) {
+    this.ctx = ctx;
+  }
+
+  draw() {
+    const courtWidth = Court.scale * Court.DIM_X;
+    const courtHeight = Court.scale * Court.DIM_Y;
+    
+    const centerX = courtWidth / 2;
+
+    // Court outline (baseline and sidelines)
+    this.ctx.strokeStyle="black";
+    this.ctx.strokeRect(Court.START_X, Court.START_Y, courtWidth, courtHeight);
+    
+    // Painted area
+    const paintWidth = 16 * Court.scale;
+    const paintHeight = 18.916666666 * Court.scale;
+    this.ctx.strokeRect(Court.START_X + centerX - paintWidth/2,
+                        Court.START_Y,
+                        paintWidth,
+                        paintHeight);
+    const innerPaintWidth = 12 * Court.scale;
+    this.ctx.strokeRect(Court.START_X + centerX - innerPaintWidth / 2,
+      Court.START_Y,
+      innerPaintWidth,
+      paintHeight);
+
+    // Key circle
+    const keyCircleRadius = 6 * Court.scale;
+    this.ctx.beginPath();
+    this.ctx.arc(Court.START_X + centerX, 
+                 Court.START_Y + paintHeight, 
+                 keyCircleRadius,
+                 0, 180, false);
+    this.ctx.stroke();
+    // this.ctx.beginPath();
+    // this.ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+    // this.ctx.stroke();
+
+    // 3 pt line
+    const threePointCornerRadius = 22 * Court.scale;
+    const threePointStraightLength = 14 * Court.scale;
+    const threePointTopRadius = 23.75 * Court.scale;
+    this.ctx.beginPath();
+    this.ctx.moveTo(Court.START_X + centerX - threePointCornerRadius, 
+                    Court.START_Y);
+    this.ctx.lineTo(Court.START_X + centerX - threePointCornerRadius,
+                    Court.START_Y + threePointStraightLength);
+    this.ctx.arcTo(Court.START_X + centerX - threePointCornerRadius,
+                   Court.START_Y + threePointStraightLength,
+                   Court.START_X + centerX + threePointCornerRadius,
+                   Court.START_Y + threePointStraightLength,
+                   300);
+    this.ctx.lineTo(Court.START_X + centerX + threePointCornerRadius,
+      Court.START_Y);
+    this.ctx.stroke();
+  }
+}
+
+Court.START_X = 20;
+Court.START_Y = 20;
+Court.scale = 15; // scale dimensions in feet to show on screen
+// X is baseline dim, Y is sideline dim (to half court) - in ft
+Court.DIM_X = 50;
+Court.DIM_Y = 47;
+module.exports = Court;
 
 /***/ })
 /******/ ]);
