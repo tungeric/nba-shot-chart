@@ -18967,6 +18967,7 @@ function plotPlayerShots(ctx, data) {
                                                     shot.locY * nbaStatsScale + courtHoopY]);
   const playerMissedShotLocs = playerMissedShots.map((shot) => [shot.locX * nbaStatsScale + courtHoopX,
                                                     shot.locY * nbaStatsScale + courtHoopY]);
+  ctx.lineWidth = 3;                                              
   playerMadeShotLocs.forEach((shotLoc, idx) => {
     ctx.beginPath();
     ctx.strokeStyle="#008000";
@@ -18983,6 +18984,7 @@ function plotPlayerShots(ctx, data) {
     ctx.stroke();
   });
   ctx.strokeStyle="#000000";
+  ctx.lineWidth = 1; 
 }
 
 function getUserInput() {
