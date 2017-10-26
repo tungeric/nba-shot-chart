@@ -18895,6 +18895,9 @@ const NBA = __webpack_require__(115);
 // NBA.stats.shots({ PlayerID: curry.playerId }).then((curryShots) => {
 //   console.log(curryShots);
 // });
+const nbaStatsScale = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale / 10;
+const courtHoopX = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_X * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale / 2;
+const courtHoopY = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.baselineToBackboard + __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.backboardToRim + __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.rimDiameter / 2;
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -18931,9 +18934,17 @@ document.addEventListener("DOMContentLoaded", () => {
 function createShotChart(ctx, canvasEl) {
   let { player } = getUserInput();
   const currPlayer = NBA.findPlayer(player);
-  NBA.stats.shots({ PlayerID: currPlayer.playerId }).then((playerShots) => {
-    console.log(playerShots);
+  NBA.stats.shots({ PlayerID: currPlayer.playerId }).then((data) => {
+    plotPlayerShots(data);
   });
+}
+
+function plotPlayerShots(data) {
+  console.log("data", data);
+  const playerShots = data.shot_Chart_Detail;
+  const playerShotLocs = playerShots.map((shot) => [shot.locX * nbaStatsScale + courtHoopX, 
+                                                    shot.locY * nbaStatsScale + courtHoopY]);
+  console.log(playerShotLocs);
 }
 
 function getUserInput() {
@@ -33723,10 +33734,10 @@ class Court {
     // this.ctx.stroke();
 
     // backboard and rim
-    const backboardWidth = 6 * Court.scale;
-    const rimDiameter = 1.5 * Court.scale;
-    const backboardToRim = 0.2 * Court.scale;
-    const baselineToBackboard = 3.83333 * Court.scale;
+    const backboardWidth = Court.backboardWidth;
+    const rimDiameter = Court.rimDiameter;
+    const backboardToRim = Court.backboardToRim;
+    const baselineToBackboard = Court.baselineToBackboard;
     this.ctx.beginPath();
     this.ctx.moveTo(Court.START_X + centerX - backboardWidth/2,
                     Court.START_Y + baselineToBackboard);
@@ -33773,6 +33784,11 @@ Court.scale = 15; // scale dimensions in feet to show on screen
 // X is baseline dim, Y is sideline dim (to half court) - in ft
 Court.DIM_X = 50;
 Court.DIM_Y = 40;
+Court.backboardWidth = 6 * Court.scale;
+Court.rimDiameter = 1.5 * Court.scale;
+Court.backboardToRim = 0.2 * Court.scale;
+Court.baselineToBackboard = 3.83333 * Court.scale;
+
 module.exports = Court;
 
 /***/ }),
