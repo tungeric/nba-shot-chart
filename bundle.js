@@ -18935,16 +18935,31 @@ function createShotChart(ctx, canvasEl) {
   let { player } = getUserInput();
   const currPlayer = NBA.findPlayer(player);
   NBA.stats.shots({ PlayerID: currPlayer.playerId }).then((data) => {
-    plotPlayerShots(data);
+    plotPlayerShots(ctx, data);
   });
 }
 
-function plotPlayerShots(data) {
-  console.log("data", data);
+function plotPlayerShots(ctx, data) {
+
+  const margin = { top: 20, right: 20, bottom: 30, left: 40 },
+    width = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_X * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale,
+    height = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_Y * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale;
+  const base = __WEBPACK_IMPORTED_MODULE_2_d3__["a" /* select */]("#content");
+  const shotPlotEl = base.append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+      .append("circle")
+        .attr('r', 7)
+          .classed("hidden", true);
+
   const playerShots = data.shot_Chart_Detail;
   const playerShotLocs = playerShots.map((shot) => [shot.locX * nbaStatsScale + courtHoopX, 
                                                     shot.locY * nbaStatsScale + courtHoopY]);
-  console.log(playerShotLocs);
+  playerShotLocs.forEach((shotLoc, idx) => {
+    ctx.beginPath();
+    ctx.arc(shotLoc[0], shotLoc[1], 5, 0, 2*Math.PI);
+    ctx.stroke();
+  });
 }
 
 function getUserInput() {
