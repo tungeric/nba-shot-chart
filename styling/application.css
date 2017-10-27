@@ -1,3 +1,17 @@
 .link-icons {
   font-size: 30px;  
 }
+
+.court-canvas {
+  position: relative;
+}
+
+.data-plot {
+  position: absolute;
+  left: 0;
+}
+
+.hover-info {
+  position: absolute;
+  left: 0;
+}

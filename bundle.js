@@ -18911,18 +18911,25 @@ document.addEventListener("DOMContentLoaded", () => {
     width = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_X * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale,
     height = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_Y * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale;
   
-  const base = __WEBPACK_IMPORTED_MODULE_2_d3__["a" /* select */]("#content");
+  const base = __WEBPACK_IMPORTED_MODULE_2_d3__["a" /* select */]("#court-content");
   const canvasEl = base.append("canvas")
+    .attr("class", "court-canvas")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
+
+  const dataEl = base.append("svg")
+  .attr("class", "data-plot")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g");
+
+  const hoverInfo = base.append("div")
+    .attr("class", "hover-info")
+    .style("opacity", 0);
   
   const ctx = canvasEl.node().getContext("2d");
 
   new __WEBPACK_IMPORTED_MODULE_1__court_js___default.a(ctx).draw();
-  
-  const tooltip = __WEBPACK_IMPORTED_MODULE_2_d3__["a" /* select */]("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
   
   Object(__WEBPACK_IMPORTED_MODULE_0__menu__["a" /* initPlayerMenu */])();
 
@@ -18931,19 +18938,21 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function createShotChart(ctx, canvasEl) {
+function createShotChart(ctx, dataEl) {
   const margin = { top: 20, right: 20, bottom: 30, left: 40 },
     width = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_X * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale,
     height = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_Y * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale;
 
   ctx.clearRect(0, 0, width, height);
   new __WEBPACK_IMPORTED_MODULE_1__court_js___default.a(ctx).draw();
+  dataEl.selectAll("*").remove();
+
 
   let { player } = getUserInput();
   const currPlayer = NBA.findPlayer(player);
   NBA.stats.shots({ PlayerID: currPlayer.playerId }).then((data) => {
     console.log(data);
-    plotPlayerShots(ctx, data);
+    plotPlayerShots(ctx, dataEl, data);
   });
 }
 
@@ -18952,13 +18961,7 @@ function plotPlayerShots(ctx, data) {
     width = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_X * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale,
     height = __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.DIM_Y * __WEBPACK_IMPORTED_MODULE_1__court_js___default.a.scale;
 
-  const base = __WEBPACK_IMPORTED_MODULE_2_d3__["a" /* select */]("#content");
-  const shotPlotEl = base.append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-      .append("circle")
-        .attr('r', 7)
-          .classed("hidden", true);
+  const base = __WEBPACK_IMPORTED_MODULE_2_d3__["a" /* select */]("#court-content");
 
   const playerShots = data.shot_Chart_Detail;
   const playerMadeShots = playerShots.filter(shot => shot.eventType==="Made Shot");
@@ -18967,24 +18970,27 @@ function plotPlayerShots(ctx, data) {
                                                     shot.locY * nbaStatsScale + courtHoopY]);
   const playerMissedShotLocs = playerMissedShots.map((shot) => [shot.locX * nbaStatsScale + courtHoopX,
                                                     shot.locY * nbaStatsScale + courtHoopY]);
-  ctx.lineWidth = 3;                                              
-  playerMadeShotLocs.forEach((shotLoc, idx) => {
-    ctx.beginPath();
-    ctx.strokeStyle="#008000";
-    ctx.arc(shotLoc[0], shotLoc[1], 5, 0, 2*Math.PI);
-    ctx.stroke();
-  });
-  playerMissedShotLocs.forEach((shotLoc, idx) => {
-    ctx.beginPath();
-    ctx.strokeStyle = "#ff0000";
-    ctx.moveTo(shotLoc[0]-5, shotLoc[1]-5);
-    ctx.lineTo(shotLoc[0]+5, shotLoc[1]+5);
-    ctx.moveTo(shotLoc[0]-5, shotLoc[1]+5);
-    ctx.lineTo(shotLoc[0]+5, shotLoc[1]-5);
-    ctx.stroke();
-  });
-  ctx.strokeStyle="#000000";
-  ctx.lineWidth = 1; 
+  
+  
+
+  // ctx.lineWidth = 3;                                              
+  // playerMadeShotLocs.forEach((shotLoc, idx) => {
+  //   ctx.beginPath();
+  //   ctx.strokeStyle="#008000";
+  //   ctx.arc(shotLoc[0], shotLoc[1], 5, 0, 2*Math.PI);
+  //   ctx.stroke();
+  // });
+  // playerMissedShotLocs.forEach((shotLoc, idx) => {
+  //   ctx.beginPath();
+  //   ctx.strokeStyle = "#ff0000";
+  //   ctx.moveTo(shotLoc[0]-5, shotLoc[1]-5);
+  //   ctx.lineTo(shotLoc[0]+5, shotLoc[1]+5);
+  //   ctx.moveTo(shotLoc[0]-5, shotLoc[1]+5);
+  //   ctx.lineTo(shotLoc[0]+5, shotLoc[1]-5);
+  //   ctx.stroke();
+  // });
+  // ctx.strokeStyle="#000000";
+  // ctx.lineWidth = 1; 
 }
 
 function getUserInput() {
